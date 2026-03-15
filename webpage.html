@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- ======================================================
+             HEAD: Meta, fonts, icons, stylesheets
+        ====================================================== -->
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>MacroForge</title>
+
+        <!-- Google Fonts: Chakra Petch (display), Manrope (body), Fira Code (monospace) -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- Font Awesome icons (v6.5.1) -->
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+            rel="stylesheet"
+        />
+
+        <!-- Third-party JS: marked (markdown parser) and DOMPurify (XSS sanitiser) -->
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+
+        <!-- External stylesheet -->
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+    <body>
+        <!-- Skip navigation link — visible only on keyboard focus -->
+        <a class="skip-link" href="#main-content">Skip to main content</a>
+
+        <!-- ======================================================
+             APP WRAPPER — max-width 700px centred container
+        ====================================================== -->
+        <div id="app">
+            <!-- ── HEADER: Logo + tagline ── -->
+            <header class="header">
+                <div class="logo">
+                    <!-- aria-hidden: purely decorative symbol, the h1 names the app -->
+                    <span style="font-size: 1.6rem" aria-hidden="true"
+                        >&#9889;</span
+                    >
+                    <h1>MacroForge</h1>
+                </div>
+                <p class="tagline">Work Smarter. Automate Everything.</p>
+            </header>
+
+            <!-- ── TAB NAVIGATION: Macros / AI Helper / Export ──
+                 Uses the ARIA tab pattern:
+                 role="tablist" on the container, role="tab" + aria-selected on each
+                 button, role="tabpanel" + aria-labelledby on each panel.
+            ── -->
+            <nav aria-label="Main navigation">
+                <div
+                    class="tabs"
+                    role="tablist"
+                    aria-label="Application sections"
+                >
+                    <button
+                        class="tab-btn active"
+                        role="tab"
+                        id="tab-macros"
+                        aria-selected="true"
+                        aria-controls="p-macros"
+                        data-tab="macros"
+                    >
+                        <i class="fas fa-terminal" aria-hidden="true"></i>
+                        Macros
+                    </button>
+                    <button
+                        class="tab-btn"
+                        role="tab"
+                        id="tab-ai"
+                        aria-selected="false"
+                        aria-controls="p-ai"
+                        data-tab="ai"
+                    >
+                        <i class="fas fa-brain" aria-hidden="true"></i> AI
+                        Helper
+                    </button>
+                    <button
+                        class="tab-btn"
+                        role="tab"
+                        id="tab-export"
+                        aria-selected="false"
+                        aria-controls="p-export"
+                        data-tab="export"
+                    >
+                        <i class="fas fa-download" aria-hidden="true"></i>
+                        Export
+                    </button>
+                </div>
+            </nav>
+
+            <!-- ── MAIN CONTENT LANDMARK ── -->
+            <main id="main-content">
+                <!-- ══════════════════════════════════════════════════
+                     PANEL: MACROS
+                     Contains the import zone (shown when empty) and
+                     the macro manager (shown after macros are loaded)
+                ══════════════════════════════════════════════════ -->
+                <div
+                    id="p-macros"
+                    class="panel active"
+                    role="tabpanel"
+                    aria-labelledby="tab-macros"
+                    tabindex="0"
+                >
+                    <!-- Import zone — visible when no macros are loaded.
+                         Supports file upload, drag-and-drop, and paste. -->
+                    <div id="import-zone" class="import-zone">
+                        <!-- Decorative icon — aria-hidden so screen readers skip it -->
+                        <div class="import-icon">
+                            <i
+                                class="fas fa-file-import"
+                                aria-hidden="true"
+                            ></i>
+                        </div>
+                        <div class="import-title">Import Your Macros</div>
+                        <div class="import-sub">
+                            Upload a file, drag &amp; drop, or paste contents to
+                            get started
+                        </div>
+                        <div class="import-btns">
+                            <button class="btn btn-primary" id="btn-upload">
+                                <i class="fas fa-upload" aria-hidden="true"></i>
+                                Upload File
+                            </button>
+                            <button class="btn btn-ghost" id="btn-new-empty">
+                                <i class="fas fa-plus" aria-hidden="true"></i>
+                                Create Manually
+                            </button>
+                        </div>
+                        <div class="import-or">
+                            — or paste file contents below —
+                        </div>
+                        <div class="import-paste">
+                            <!-- Label is visually hidden but present for screen readers -->
+                            <label for="paste-area" class="visually-hidden">
+                                Paste macro file contents (CSV, JSON, or Shell
+                                aliases)
+                            </label>
+                            <textarea
+                                id="paste-area"
+                                aria-label="Paste macro file contents"
+                                placeholder="Paste CSV, JSON, or Shell alias content here...&#10;&#10;CSV example:&#10;Git Status,git status,ctrl+g&#10;Deploy,make && ./deploy.sh,ctrl+d"
+                            ></textarea>
+                            <button
+                                class="btn btn-primary btn-sm import-paste-btn"
+                                id="btn-paste-import"
+                            >
+                                <i class="fas fa-check" aria-hidden="true"></i>
+                                Import from Paste
+                            </button>
+                        </div>
+                        <div class="import-formats">
+                            Supported:
+                            <strong>CSV</strong> (name,command,keybinding) ·
+                            <strong>JSON</strong> (array of objects) ·
+                            <strong>Shell</strong> (alias definitions)
+                        </div>
+
+                        <!-- Hidden file input triggered by the Upload button -->
+                        <input
+                            type="file"
+                            id="file-input"
+                            accept=".csv,.json,.sh,.txt"
+                            hidden
+                        />
+                    </div>
+
+                    <!-- Macro manager — shown after at least one macro is imported -->
+                    <div id="macro-manager" style="display: none">
+                        <!-- Dynamic import-result banner (injected by JS after import) -->
+                        <div id="import-banner-area"></div>
+
+                        <!-- How-to-Use collapsible guide -->
+                        <div id="guide-card" class="guide-card">
+                            <h2>
+                                <i
+                                    class="fas fa-circle-info"
+                                    aria-hidden="true"
+                                ></i>
+                                How to Use Your Macros
+                            </h2>
+
+                            <!-- guide-steps-content is referenced by the toggle button via aria-controls -->
+                            <div class="guide-steps" id="guide-steps-content">
+                                <div class="guide-step">
+                                    <div class="guide-num" aria-hidden="true">
+                                        1
+                                    </div>
+                                    <div class="guide-step-content">
+                                        <div class="guide-step-title">
+                                            Quick: Copy &amp; Paste into
+                                            Terminal
+                                        </div>
+                                        <div class="guide-step-desc">
+                                            Click
+                                            <strong>"Copy Command"</strong> on
+                                            any macro below → open your terminal
+                                            app (Terminal, iTerm, etc.) → paste
+                                            with <code>Ctrl+V</code> (or
+                                            <code>Cmd+V</code> on Mac) → press
+                                            <strong>Enter</strong>. The command
+                                            runs immediately.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="guide-step">
+                                    <div class="guide-num" aria-hidden="true">
+                                        2
+                                    </div>
+                                    <div class="guide-step-content">
+                                        <div class="guide-step-title">
+                                            Best: Import into the C Program
+                                            (Keybindings)
+                                        </div>
+                                        <div class="guide-step-desc">
+                                            This is the full MacroForge
+                                            experience — run macros by pressing
+                                            keybindings like
+                                            <code>ctrl+g</code>.<br />
+                                            <strong>a)</strong> Click the
+                                            <strong>Export</strong> tab above →
+                                            select macros → choose
+                                            <strong>CSV</strong> format → click
+                                            <strong>Download</strong>.<br />
+                                            <strong>b)</strong> Open an
+                                            <strong>external terminal</strong>
+                                            (not VS Code terminal), navigate to
+                                            the project folder, and run:<br />
+                                            <code
+                                                >make && ./macro
+                                                ~/Downloads/macroforge_export.csv</code
+                                            ><br />
+                                            <strong>c)</strong> Choose
+                                            <strong>[3]</strong> to run by name
+                                            or <strong>[4]</strong> to run by
+                                            pressing the keybinding you set.<br />
+                                            <em
+                                                style="
+                                                    font-size: 0.78rem;
+                                                    color: var(--text-3);
+                                                "
+                                                >Important: Use an external
+                                                terminal (Terminal.app, iTerm) —
+                                                VS Code's built-in terminal
+                                                intercepts some shortcuts.</em
+                                            >
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="guide-step">
+                                    <div class="guide-num" aria-hidden="true">
+                                        3
+                                    </div>
+                                    <div class="guide-step-content">
+                                        <div class="guide-step-title">
+                                            Alternative: Export as Shell Aliases
+                                        </div>
+                                        <div class="guide-step-desc">
+                                            Go to <strong>Export</strong> tab →
+                                            choose <strong>Shell</strong> format
+                                            → <strong>Download</strong> the
+                                            <code>.sh</code> file. In your
+                                            terminal, run
+                                            <code
+                                                >source
+                                                ~/Downloads/macroforge_export.sh</code
+                                            >. Now just type the alias name
+                                            (e.g. <code>git_status</code>) to
+                                            run any macro. Aliases last until
+                                            you close the terminal.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Guide collapse/expand toggle — aria-expanded tracks open/closed state -->
+                            <button
+                                class="guide-toggle"
+                                id="guide-toggle"
+                                aria-expanded="true"
+                                aria-controls="guide-steps-content"
+                            >
+                                <i
+                                    class="fas fa-chevron-up"
+                                    aria-hidden="true"
+                                ></i>
+                                <span>Hide guide</span>
+                            </button>
+                        </div>
+
+                        <!-- Toolbar: search box + Import/New buttons -->
+                        <div class="toolbar">
+                            <div class="search-box">
+                                <!-- Visually hidden label associates the input with its purpose -->
+                                <label for="search" class="visually-hidden"
+                                    >Search macros</label
+                                >
+                                <i class="fas fa-search" aria-hidden="true"></i>
+                                <input
+                                    type="text"
+                                    id="search"
+                                    placeholder="Search macros..."
+                                    aria-label="Search macros"
+                                />
+                            </div>
+                            <button
+                                class="btn btn-ghost btn-sm"
+                                id="btn-import-more"
+                            >
+                                <i
+                                    class="fas fa-file-import"
+                                    aria-hidden="true"
+                                ></i>
+                                Import
+                            </button>
+                            <button class="btn btn-primary btn-sm" id="btn-new">
+                                <i class="fas fa-plus" aria-hidden="true"></i>
+                                New
+                            </button>
+                        </div>
+
+                        <!-- Dynamically populated list of macro cards (rendered by renderMacros()) -->
+                        <div
+                            id="macro-list"
+                            class="macro-list"
+                            aria-live="polite"
+                            aria-label="Macro list"
+                        ></div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════════════
+                     PANEL: AI HELPER
+                     Lets users generate commands from descriptions
+                     or explain existing commands using the Poe AI API
+                ══════════════════════════════════════════════════ -->
+                <div
+                    id="p-ai"
+                    class="panel"
+                    role="tabpanel"
+                    aria-labelledby="tab-ai"
+                    tabindex="0"
+                >
+                    <!-- Mode toggle: Generate Command / Explain Command -->
+                    <div
+                        class="ai-toggle"
+                        role="group"
+                        aria-label="AI mode selection"
+                    >
+                        <button
+                            class="ai-toggle-btn active"
+                            data-mode="generate"
+                            aria-pressed="true"
+                        >
+                            Generate Command
+                        </button>
+                        <button
+                            class="ai-toggle-btn"
+                            data-mode="explain"
+                            aria-pressed="false"
+                        >
+                            Explain Command
+                        </button>
+                    </div>
+
+                    <!-- Labelled prompt input -->
+                    <label for="ai-input" class="visually-hidden"
+                        >AI prompt</label
+                    >
+                    <textarea
+                        class="ai-textarea"
+                        id="ai-input"
+                        aria-label="AI prompt"
+                        placeholder="Describe what you want to automate..."
+                    ></textarea>
+
+                    <!-- Run AI button -->
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: flex-end;
+                            margin-bottom: 14px;
+                        "
+                    >
+                        <button class="btn btn-ai" id="btn-ai">
+                            <i class="fas fa-sparkles" aria-hidden="true"></i>
+                            Run AI
+                        </button>
+                    </div>
+
+                    <!-- AI result display area (populated by renderAI()) -->
+                    <div
+                        class="ai-result"
+                        id="ai-result"
+                        aria-live="polite"
+                        aria-label="AI result"
+                    >
+                        <div class="ai-placeholder">
+                            <!-- Decorative robot icon -->
+                            <i class="fas fa-robot" aria-hidden="true"></i
+                            >Results appear here
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ══════════════════════════════════════════════════
+                     PANEL: EXPORT
+                     Lets users select macros and download them as
+                     CSV (for the C program), Shell aliases, or JSON
+                ══════════════════════════════════════════════════ -->
+                <div
+                    id="p-export"
+                    class="panel"
+                    role="tabpanel"
+                    aria-labelledby="tab-export"
+                    tabindex="0"
+                >
+                    <!-- Usage instructions banner -->
+                    <div class="export-info">
+                        <strong
+                            ><i
+                                class="fas fa-circle-info"
+                                aria-hidden="true"
+                            ></i>
+                            How to export &amp; use:</strong
+                        ><br />
+                        1. Select macros below (make sure each has a keybinding
+                        set).<br />
+                        2. Choose a format, then click
+                        <strong>Download</strong>.<br /><br />
+                        <strong>CSV (recommended)</strong> → Import into the C
+                        program by running:
+                        <code
+                            >make && ./macro
+                            ~/Downloads/macroforge_export.csv</code
+                        >
+                        (or use menu option [10] inside the program).<br />
+                        <strong>Shell</strong> → Run
+                        <code>source ~/Downloads/macroforge_export.sh</code> in
+                        terminal to create quick aliases.<br />
+                        <strong>JSON</strong> → For backup or programmatic use.
+                    </div>
+
+                    <!-- Select-all checkbox + format selector (CSV / Shell / JSON) -->
+                    <div class="export-bar">
+                        <label
+                            ><input type="checkbox" id="sel-all" /> Select
+                            All</label
+                        >
+                        <div
+                            class="fmt-btns"
+                            role="group"
+                            aria-label="Export format"
+                        >
+                            <button class="fmt-btn" data-fmt="csv">
+                                <i
+                                    class="fas fa-file-csv"
+                                    aria-hidden="true"
+                                ></i>
+                                CSV
+                            </button>
+                            <button
+                                class="fmt-btn active"
+                                data-fmt="shell"
+                                aria-pressed="true"
+                            >
+                                <i
+                                    class="fas fa-terminal"
+                                    aria-hidden="true"
+                                ></i>
+                                Shell
+                            </button>
+                            <button class="fmt-btn" data-fmt="json">
+                                <i class="fas fa-code" aria-hidden="true"></i>
+                                JSON
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dynamically rendered per-macro checkboxes -->
+                    <div
+                        id="export-checks"
+                        class="export-checks"
+                        aria-label="Macros available for export"
+                    ></div>
+
+                    <!-- Live preview of the export output -->
+                    <div class="export-preview">
+                        <pre><code id="export-code">Select macros above to preview</code></pre>
+                    </div>
+
+                    <!-- Copy and Download buttons -->
+                    <div class="export-btns">
+                        <button class="btn btn-ghost btn-sm" id="btn-exp-copy">
+                            <i class="fas fa-copy" aria-hidden="true"></i> Copy
+                        </button>
+                        <button class="btn btn-primary btn-sm" id="btn-exp-dl">
+                            <i class="fas fa-download" aria-hidden="true"></i>
+                            Download
+                        </button>
+                    </div>
+                </div>
+            </main>
+            <!-- /#main-content -->
+        </div>
+        <!-- /#app -->
+
+        <!-- ── Modal root: modals and confirmation dialogs are injected here ── -->
+        <div id="modal-root"></div>
+
+        <!-- ── Toast notification container ──
+             role="status" + aria-live="polite" ensures screen readers
+             announce new toasts without interrupting the current reading flow.
+        ── -->
+        <div
+            id="toasts"
+            role="status"
+            aria-live="polite"
+            aria-atomic="false"
+        ></div>
+
+        <!-- ── External application logic ── -->
+        <script src="script.js"></script>
+    </body>
+</html>

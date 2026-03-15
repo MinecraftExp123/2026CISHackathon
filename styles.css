@@ -1,0 +1,1643 @@
+/* ══════════════════════════════════════════════════════════════════════════
+   MacroForge — styles.css
+   Extracted from webpage.html and organised with section comments.
+   Companion files: script.js, webpage.html
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── DESIGN TOKENS (CSS Custom Properties)
+   Light-mode palette, typography scale, and layout primitives.
+   The .dark overrides switch every token to the dark-mode values.
+   ══════════════════════════════════════════════════════════════════════════ */
+:root {
+    --bg-base: #f2f4f7;
+    --bg-surface: #ffffff;
+    --bg-card: #f8f9fb;
+    --bg-elevated: #eceef2;
+    --bg-hover: #e1e4e9;
+    --border: #7d8a96;
+    --border-bright: #5d6b78;
+    --text-1: #111827;
+    --text-2: #4b5563;
+    --text-3: #576374;
+    --accent: #047857;
+    --accent-dim: rgba(4, 120, 87, 0.08);
+    --accent-glow: rgba(4, 120, 87, 0.25);
+    --purple: #6d28d9;
+    --purple-dim: rgba(109, 40, 217, 0.08);
+    --danger: #dc2626;
+    --warning: #b45309;
+    --blue: #2563eb;
+    --blue-dim: rgba(37, 99, 235, 0.08);
+    --code-bg: #f3f4f6;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --font-display: "Chakra Petch", sans-serif;
+    --font-body: "Manrope", sans-serif;
+    --font-code: "Fira Code", monospace;
+}
+
+/* ── Dark Mode Token Overrides ── */
+.dark {
+    --bg-base: #080b10;
+    --bg-surface: #0f1318;
+    --bg-card: #161b22;
+    --bg-elevated: #1c2230;
+    --bg-hover: #252d3d;
+    --border: #4e6a84;
+    --border-bright: #6080a0;
+    --text-1: #e6edf5;
+    --text-2: #8b98ab;
+    --text-3: #7a8fa3;
+    --accent: #00e89c;
+    --accent-dim: rgba(0, 232, 156, 0.08);
+    --accent-glow: rgba(0, 232, 156, 0.3);
+    --purple: #8b6cff;
+    --purple-dim: rgba(139, 108, 255, 0.1);
+    --danger: #ff5252;
+    --warning: #ffbb33;
+    --blue: #60a5fa;
+    --blue-dim: rgba(96, 165, 250, 0.1);
+    --code-bg: #0b1018;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── RESET & BASE
+   Box-model normalisation, root font size, and body defaults.
+   ══════════════════════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-body);
+    background: var(--bg-base);
+    color: var(--text-1);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ── App Wrapper — max-width 700 px centred container ── */
+#app {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 16px 60px;
+}
+
+/* ── Visually Hidden — accessible to screen readers but invisible on screen ── */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ── Skip Navigation Link — visible only when focused via keyboard ── */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    padding: 10px 18px;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 0 0 var(--radius-sm) 0;
+    z-index: 9999;
+    text-decoration: none;
+    transition: top 0.2s;
+}
+.skip-link:focus {
+    top: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── HEADER
+   Logo row (icon + gradient wordmark) and tagline subtitle.
+   ══════════════════════════════════════════════════════════════════════════ */
+.header {
+    text-align: center;
+    padding: 28px 0 18px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.logo h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.tagline {
+    font-size: 0.8rem;
+    color: var(--text-3);
+    margin-top: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── TAB NAVIGATION
+   Pill-style tab bar and individual tab buttons.
+   Active state uses accent-dim background with accent text colour.
+   ══════════════════════════════════════════════════════════════════════════ */
+.tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 18px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 4px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--text-3);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.tab-btn:hover {
+    color: var(--text-2);
+    background: var(--bg-elevated);
+}
+
+.tab-btn.active {
+    background: var(--accent-dim);
+    color: var(--accent);
+    box-shadow: inset 0 0 0 1px
+        color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* ── Panel visibility — only the .active panel is shown ── */
+.panel {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.panel.active {
+    display: block;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── BUTTONS
+   Base .btn class plus variant modifiers:
+   btn-primary (accent), btn-ai (gradient), btn-ghost (outlined),
+   btn-danger (red), btn-blue, and the btn-sm size modifier.
+   ══════════════════════════════════════════════════════════════════════════ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+/* Primary — solid accent fill */
+.btn-primary {
+    background: var(--accent);
+    color: #fff;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.1);
+}
+
+/* AI — diagonal purple-to-accent gradient */
+.btn-ai {
+    background: linear-gradient(135deg, var(--purple), var(--accent));
+    color: #fff;
+}
+
+.btn-ai:hover {
+    filter: brightness(1.1);
+}
+
+/* Ghost — subtle elevated background with border */
+.btn-ghost {
+    background: var(--bg-elevated);
+    color: var(--text-2);
+    border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+    border-color: var(--border-bright);
+    color: var(--text-1);
+}
+
+/* Danger — solid red fill */
+.btn-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+/* Blue — solid blue fill */
+.btn-blue {
+    background: var(--blue);
+    color: #fff;
+}
+
+.btn-blue:hover {
+    filter: brightness(1.1);
+}
+
+/* Small size modifier */
+.btn-sm {
+    padding: 7px 12px;
+    font-size: 0.78rem;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── IMPORT ZONE
+   Full-width dashed drop target shown when no macros are loaded.
+   Supports file upload, drag-and-drop (drag-over highlight), and paste.
+   ══════════════════════════════════════════════════════════════════════════ */
+.import-zone {
+    border: 2px dashed var(--border-bright);
+    border-radius: var(--radius);
+    padding: 40px 24px;
+    text-align: center;
+    background: var(--bg-surface);
+    transition:
+        border-color 0.2s,
+        background 0.2s;
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* Drag-over highlight state */
+.import-zone.drag-over {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+}
+
+.import-icon {
+    font-size: 2.5rem;
+    color: var(--accent);
+    opacity: 0.5;
+    margin-bottom: 12px;
+}
+
+.import-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.import-sub {
+    font-size: 0.84rem;
+    color: var(--text-3);
+    margin-bottom: 18px;
+}
+
+.import-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.import-or {
+    font-size: 0.78rem;
+    color: var(--text-3);
+    margin: 12px 0 8px;
+}
+
+/* Paste textarea inside the import zone */
+.import-paste textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-code);
+    font-size: 14px;
+    color: var(--text-1);
+    resize: vertical;
+    outline: none;
+}
+
+.import-paste textarea:focus {
+    border-color: var(--accent);
+}
+
+.import-paste textarea::placeholder {
+    color: var(--text-3);
+}
+
+.import-paste-btn {
+    margin-top: 8px;
+}
+
+.import-formats {
+    font-size: 0.72rem;
+    color: var(--text-3);
+    margin-top: 14px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── TOOLBAR
+   Search box + Import / New buttons row above the macro list.
+   ══════════════════════════════════════════════════════════════════════════ */
+.toolbar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+/* Search box with icon overlay */
+.search-box {
+    flex: 1;
+    min-width: 140px;
+    position: relative;
+}
+
+.search-box i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-3);
+    font-size: 0.85rem;
+    pointer-events: none;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 12px 10px 36px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--text-1);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+    border-color: var(--accent);
+}
+
+.search-box input::placeholder {
+    color: var(--text-3);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── MACRO LIST & MACRO CARDS
+   Vertically stacked list of macro cards. Each card has a main content
+   area (name, command, keybinding) and an action bar at the bottom.
+   ══════════════════════════════════════════════════════════════════════════ */
+.macro-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Individual macro card */
+.macro-item {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+    animation: fadeIn 0.3s ease-out backwards;
+}
+
+.macro-item:hover {
+    box-shadow: var(--shadow);
+}
+
+.macro-item-main {
+    padding: 14px 16px;
+}
+
+/* Top row: name + category badge */
+.macro-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.macro-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Category pill badge */
+.macro-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    background: var(--accent-dim);
+    color: var(--accent);
+}
+
+/* Command display (monospace, capped height) */
+.macro-cmd {
+    font-family: var(--font-code);
+    font-size: 0.8rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--accent);
+    word-break: break-all;
+    max-height: 56px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+/* Bottom meta row: keybinding chip + edit/delete icons */
+.macro-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Keyboard shortcut chip */
+.macro-key {
+    font-family: var(--font-code);
+    font-size: 0.72rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    color: var(--text-2);
+}
+
+/* Edit / delete icon button row */
+.macro-edit-actions {
+    display: flex;
+    gap: 2px;
+}
+
+/* ── Icon Buttons (small square icon-only buttons) ── */
+.icon-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    color: var(--text-3);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.icon-btn:hover {
+    background: var(--bg-elevated);
+    color: var(--text-1);
+}
+
+.icon-btn.del:hover {
+    color: var(--danger);
+}
+
+.icon-btn.ai:hover {
+    color: var(--purple);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── MACRO ACTION BAR
+   Full-width strip of contextual action buttons at the bottom of each
+   macro card: Copy Command | How to Run | Explain.
+   ══════════════════════════════════════════════════════════════════════════ */
+.macro-actions-bar {
+    display: flex;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    background: var(--bg-card);
+}
+
+.macro-action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 8px;
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-2);
+    cursor: pointer;
+    transition: all 0.15s;
+    border-right: 1px solid var(--border);
+}
+
+.macro-action-btn:last-child {
+    border-right: none;
+}
+
+.macro-action-btn:hover {
+    background: var(--bg-elevated);
+    color: var(--text-1);
+}
+
+/* Copy hover — accent green */
+.macro-action-btn.copy-btn:hover {
+    color: var(--accent);
+    background: var(--accent-dim);
+}
+
+/* Run hover — blue */
+.macro-action-btn.run-btn:hover {
+    color: var(--blue);
+    background: var(--blue-dim);
+}
+
+/* AI hover — purple */
+.macro-action-btn.ai-btn:hover {
+    color: var(--purple);
+    background: var(--purple-dim);
+}
+
+/* Transient "Copied!" feedback state */
+.macro-action-btn.copied {
+    color: var(--accent) !important;
+    background: var(--accent-dim) !important;
+}
+
+/* ── Empty State ── */
+.empty {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-3);
+}
+
+.empty i {
+    font-size: 2.4rem;
+    opacity: 0.3;
+    display: block;
+    margin-bottom: 10px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── GUIDE CARD (How-to-Use)
+   Collapsible step-by-step guide shown at the top of the macro manager.
+   Uses .guide-collapsed to hide the steps via display:none on .guide-steps.
+   ══════════════════════════════════════════════════════════════════════════ */
+.guide-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 18px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.guide-card h2 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.guide-card h2 i {
+    color: var(--blue);
+}
+
+/* Steps container */
+.guide-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.guide-step {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+/* Numbered circle */
+.guide-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
+
+.guide-step-content {
+    flex: 1;
+}
+
+.guide-step-title {
+    font-weight: 700;
+    font-size: 0.88rem;
+    margin-bottom: 2px;
+}
+
+.guide-step-desc {
+    font-size: 0.82rem;
+    color: var(--text-2);
+    line-height: 1.5;
+}
+
+.guide-step-desc code {
+    font-family: var(--font-code);
+    font-size: 0.78rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--accent);
+}
+
+/* Collapse / expand toggle button */
+.guide-toggle {
+    background: none;
+    border: none;
+    color: var(--blue);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.guide-toggle:hover {
+    text-decoration: underline;
+}
+
+/* Collapsed state — hide steps and flip chevron */
+.guide-collapsed .guide-steps {
+    display: none;
+}
+
+.guide-collapsed .guide-toggle i {
+    transform: rotate(0deg);
+}
+
+.guide-toggle i {
+    transition: transform 0.2s;
+    transform: rotate(180deg);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── RUN PANEL (How-to-Run overlay)
+   Modal overlay listing three execution methods for a macro:
+   copy-paste, C program keybinding, and shell alias.
+   ══════════════════════════════════════════════════════════════════════════ */
+.run-panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    animation: scaleIn 0.2s ease-out;
+}
+
+.run-panel-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.run-panel-head h3 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.run-panel-head h3 i {
+    color: var(--blue);
+}
+
+.run-panel-body {
+    padding: 20px;
+}
+
+/* Individual execution option card */
+.run-option {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s;
+}
+
+.run-option:last-child {
+    margin-bottom: 0;
+}
+
+.run-option:hover {
+    border-color: var(--border-bright);
+}
+
+/* Option header row: coloured icon + label text */
+.run-option-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    margin-bottom: 8px;
+}
+
+.run-option-label .opt-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #fff;
+}
+
+/* Option icon colour variants */
+.opt-icon.opt-copy {
+    background: var(--accent);
+}
+.opt-icon.opt-program {
+    background: var(--blue);
+}
+.opt-icon.opt-shell {
+    background: var(--purple);
+}
+
+.run-option-steps {
+    font-size: 0.82rem;
+    color: var(--text-2);
+    padding-left: 36px;
+}
+
+.run-option-steps ol {
+    padding-left: 18px;
+}
+
+.run-option-steps li {
+    margin-bottom: 4px;
+}
+
+.run-option-steps code {
+    font-family: var(--font-code);
+    font-size: 0.76rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--accent);
+}
+
+.run-option-action {
+    margin-top: 10px;
+    padding-left: 36px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── AI HELPER PANEL
+   Mode toggle (Generate / Explain), prompt textarea, and result display.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Mode toggle strip */
+.ai-toggle {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 14px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+}
+
+.ai-toggle-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-3);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ai-toggle-btn:hover {
+    color: var(--text-2);
+}
+
+.ai-toggle-btn.active {
+    background: var(--purple-dim);
+    color: var(--purple);
+}
+
+/* Prompt input textarea */
+.ai-textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    resize: vertical;
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--text-1);
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 10px;
+}
+
+.ai-textarea:focus {
+    border-color: var(--purple);
+}
+
+.ai-textarea::placeholder {
+    color: var(--text-3);
+}
+
+/* Result display box */
+.ai-result {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    min-height: 80px;
+    overflow: hidden;
+}
+
+/* Placeholder (before any query is run) */
+.ai-placeholder {
+    text-align: center;
+    padding: 32px;
+    color: var(--text-3);
+    font-size: 0.85rem;
+}
+
+.ai-placeholder i {
+    font-size: 1.8rem;
+    opacity: 0.3;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Loading state row */
+.ai-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 20px;
+    color: var(--text-3);
+    font-size: 0.85rem;
+}
+
+/* Animated cursor used in both streaming and loading states */
+.cursor-blink {
+    display: inline-block;
+    width: 7px;
+    height: 16px;
+    background: var(--purple);
+    border-radius: 1px;
+    animation: blink 0.7s step-end infinite;
+}
+
+/* Generated-command result card */
+.ai-gen-card {
+    padding: 16px;
+}
+
+.ai-gen-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-3);
+    margin-bottom: 6px;
+}
+
+.ai-gen-cmd {
+    font-family: var(--font-code);
+    font-size: 0.84rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    color: var(--accent);
+    word-break: break-all;
+    margin-bottom: 10px;
+}
+
+.ai-gen-desc {
+    font-size: 0.84rem;
+    color: var(--text-2);
+    margin-bottom: 6px;
+}
+
+.ai-gen-safety {
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Safety colour variants */
+.safety-safe {
+    color: var(--accent);
+}
+.safety-warning {
+    color: var(--warning);
+}
+.safety-dangerous {
+    color: var(--danger);
+}
+
+.ai-gen-btns {
+    display: flex;
+    gap: 8px;
+}
+
+/* Markdown explanation result (used for the Explain mode) */
+.ai-md {
+    padding: 16px;
+    line-height: 1.7;
+    color: var(--text-2);
+}
+
+.ai-md h2 {
+    font-family: var(--font-display);
+    color: var(--text-1);
+    font-size: 1.05rem;
+    margin: 16px 0 6px;
+}
+
+.ai-md h3 {
+    color: var(--text-1);
+    font-size: 0.92rem;
+    margin: 12px 0 4px;
+}
+
+.ai-md code {
+    font-family: var(--font-code);
+    font-size: 0.8rem;
+    background: var(--code-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--accent);
+}
+
+.ai-md pre {
+    background: var(--code-bg);
+    border-radius: 6px;
+    padding: 10px;
+    margin: 8px 0;
+    overflow-x: auto;
+}
+
+.ai-md pre code {
+    background: transparent;
+    padding: 0;
+}
+
+.ai-md ul,
+.ai-md ol {
+    padding-left: 20px;
+    margin: 6px 0;
+}
+
+.ai-md li {
+    margin: 3px 0;
+}
+
+.ai-md strong {
+    color: var(--text-1);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── EXPORT PANEL
+   Usage instructions banner, select-all + format selector bar,
+   per-macro checkbox rows, live preview, and copy/download buttons.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Informational banner at the top of the Export panel */
+.export-info {
+    background: var(--blue-dim);
+    border: 1px solid color-mix(in srgb, var(--blue) 20%, transparent);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    font-size: 0.82rem;
+    color: var(--text-2);
+    line-height: 1.6;
+}
+
+.export-info strong {
+    color: var(--text-1);
+}
+
+.export-info code {
+    font-family: var(--font-code);
+    font-size: 0.76rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: var(--accent);
+}
+
+/* Select-all checkbox + format button row */
+.export-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.export-bar label {
+    font-size: 0.84rem;
+    color: var(--text-2);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.export-bar input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+}
+
+/* Format selector buttons (CSV / Shell / JSON) */
+.fmt-btns {
+    display: flex;
+    gap: 4px;
+}
+
+.fmt-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-3);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.fmt-btn:hover {
+    border-color: var(--border-bright);
+}
+
+.fmt-btn.active {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* Per-macro checkbox rows */
+.export-checks {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 14px;
+}
+
+.export-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.84rem;
+    cursor: pointer;
+}
+
+.export-row input {
+    accent-color: var(--accent);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.export-row-name {
+    font-weight: 600;
+}
+
+/* Live preview code block */
+.export-preview {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 12px;
+    max-height: 280px;
+    overflow: auto;
+}
+
+.export-preview pre {
+    margin: 0;
+}
+
+.export-preview code {
+    font-family: var(--font-code);
+    font-size: 0.78rem;
+    color: var(--accent);
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+/* Copy + Download button row */
+.export-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── MODAL & OVERLAY
+   Full-viewport backdrop + centred modal card. Shared by the macro
+   edit modal, the AI-add modal, and the confirmation dialog.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Semi-transparent blurred backdrop */
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    animation: fadeIn 0.15s ease-out;
+}
+
+/* Modal card */
+.modal {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 460px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    animation: scaleIn 0.2s ease-out;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-head {
+    padding: 18px 20px 0;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.modal-body {
+    padding: 14px 20px;
+}
+
+.modal-foot {
+    padding: 0 20px 16px;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── FORM FIELDS
+   Label + input/select/textarea combos used inside modals.
+   Includes special layouts: field-row (side-by-side), key-row
+   (input + record button), and cmd-row (input + AI inline button).
+   ══════════════════════════════════════════════════════════════════════════ */
+.field {
+    margin-bottom: 12px;
+}
+
+/* ALL-CAPS micro-label */
+.field-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+/* Base input / select / textarea styles */
+.field-input,
+.field-select,
+.field-textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: var(--text-1);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.field-input:focus,
+.field-select:focus,
+.field-textarea:focus {
+    border-color: var(--accent);
+}
+
+.field-textarea {
+    resize: vertical;
+    min-height: 50px;
+}
+
+/* Monospace variant for command inputs */
+.field-input.code {
+    font-family: var(--font-code);
+    font-size: 14px;
+}
+
+/* Side-by-side fields row */
+.field-row {
+    display: flex;
+    gap: 8px;
+}
+
+.field-row .field {
+    flex: 1;
+}
+
+.field-hint {
+    font-size: 0.72rem;
+    color: var(--text-3);
+    margin-top: 3px;
+}
+
+/* Keybinding input + Record button layout */
+.key-row {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+}
+
+.key-row .field-input {
+    flex: 1;
+}
+
+/* Record keybinding button */
+.rec-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-elevated);
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-2);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.rec-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Active recording state — pulsing red */
+.rec-btn.recording {
+    border-color: var(--danger);
+    color: var(--danger);
+    background: rgba(220, 38, 38, 0.06);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.field-input.recording {
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.15);
+}
+
+/* Command input + AI inline-generate button layout */
+.cmd-row {
+    display: flex;
+    gap: 6px;
+}
+
+.cmd-row .field-input {
+    flex: 1;
+}
+
+/* Small gradient AI button used inline inside the modal */
+.ai-inline-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, var(--purple), var(--accent));
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: filter 0.15s;
+}
+
+.ai-inline-btn:hover {
+    filter: brightness(1.1);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── TOAST NOTIFICATIONS
+   Slide-in banners that appear in the top-right corner.
+   Three severity variants: ok (green), err (red), info (purple).
+   ══════════════════════════════════════════════════════════════════════════ */
+#toasts {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.toast {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    font-size: 0.84rem;
+    font-weight: 500;
+    animation: slideIn 0.25s ease-out;
+    max-width: 320px;
+}
+
+/* Slide-out animation class applied by JS before removal */
+.toast.out {
+    animation: slideOut 0.25s ease-in forwards;
+}
+
+.toast-ok i {
+    color: var(--accent);
+}
+.toast-err i {
+    color: var(--danger);
+}
+.toast-info i {
+    color: var(--purple);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── CONFIRMATION DIALOG
+   Centered icon + message + Cancel/Delete buttons inside a modal.
+   ══════════════════════════════════════════════════════════════════════════ */
+.confirm-box {
+    text-align: center;
+    padding: 24px 20px;
+}
+
+.confirm-box i {
+    font-size: 2rem;
+    color: var(--warning);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.confirm-box p {
+    font-size: 0.9rem;
+    color: var(--text-2);
+    margin-bottom: 18px;
+}
+
+.confirm-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── IMPORT RESULT BANNER
+   Accent-coloured strip shown at the top of the macro manager after a
+   successful import. Displays the macro count and a "Clear All" link.
+   ══════════════════════════════════════════════════════════════════════════ */
+.import-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    background: var(--accent-dim);
+    border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+    border-radius: var(--radius-sm);
+    font-size: 0.84rem;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.import-banner button {
+    background: none;
+    border: none;
+    color: var(--accent);
+    cursor: pointer;
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── KEYFRAME ANIMATIONS
+   fadeIn    — opacity 0 → 1  (panels, cards, overlays)
+   scaleIn   — opacity + scale 0.96 → 1  (modals)
+   slideIn   — translate from right  (toasts enter)
+   slideOut  — translate to right    (toasts exit)
+   blink     — cursor blink for the streaming AI indicator
+   pulse     — opacity pulse for the recording button
+   ══════════════════════════════════════════════════════════════════════════ */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(60px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    to {
+        opacity: 0;
+        transform: translateX(60px);
+    }
+}
+
+@keyframes blink {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── RESPONSIVE — SMALL SCREENS (≤ 500 px)
+   Stack flex rows to columns, simplify action button labels.
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 500px) {
+    .toolbar {
+        flex-direction: column;
+    }
+    .field-row {
+        flex-direction: column;
+    }
+    .export-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .import-btns {
+        flex-direction: column;
+        align-items: center;
+    }
+    .macro-action-btn {
+        font-size: 0.72rem;
+        padding: 8px 4px;
+        gap: 4px;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ── REDUCED MOTION
+   Disables animations and transitions for users who have requested reduced
+   motion at the OS level (e.g. Windows "Reduce motion", macOS/iOS setting).
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
