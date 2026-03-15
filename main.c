@@ -1299,6 +1299,11 @@ void main_loop(const char *config_path)
 // ---------------------------------------------------------------------------
 int main(int argc, char **argv)
 {
+    if (argc > 2) {
+        printf("Usage: %s [path/to/exported.csv]\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+
     char *home_dir    = getenv("HOME");
     char *config_path = malloc(strlen(home_dir) + strlen("/.config/hackathon/macros.csv") + 1);
     sprintf(config_path, "%s/.config/hackathon/macros.csv", home_dir);
@@ -1340,7 +1345,7 @@ int main(int argc, char **argv)
     // If a CSV file was passed as argument, import it automatically.
     // Usage:  ./macro path/to/exported.csv
     // -----------------------------------------------------------------------
-    if (argc >= 2) {
+    if (argc == 2) {
         // Copy argv[1] so we can clean up the path
         char import_arg[512];
         strncpy(import_arg, argv[1], sizeof(import_arg) - 1);
@@ -1392,8 +1397,6 @@ int main(int argc, char **argv)
         print_line('=');
         printf("\n  Press Enter to create your first macro...");
         getchar();
-        mode = MODE_INSERT_CUSTOM;
-    } else if (!has_macros) {
         mode = MODE_INSERT_CUSTOM;
     }
 
