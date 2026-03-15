@@ -1299,6 +1299,7 @@ void main_loop(const char *config_path)
 // ---------------------------------------------------------------------------
 int main(int argc, char **argv)
 {
+    // Give help too many arguments are provided
     if (argc > 2) {
         printf("Usage: %s [path/to/exported.csv]\n", argv[0]);
         exit(EXIT_FAILURE);
